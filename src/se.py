@@ -1,4 +1,5 @@
 import os
+import ast
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
@@ -140,3 +141,48 @@ def enc():
     f = open("../data/index.txt","w")
     f.write(str(invertedEncIndex))
     f.close()
+
+def gen_tok(keyword):
+    byteText = bytes
+    f = open("../data/skprf.txt","r")
+    prfCipher = AES.new(byteText.fromhex(f.read()),AES.MODE_ECB)
+    f.close
+    hexText = strToHex(keyword)
+    byteText = byteText.fromhex(hexText)
+    padmsg = pad(byteText,16)
+    wordEnc = prfCipher.encrypt(padmsg)
+    token = wordEnc.hex()
+    f = open("../data/token.txt","w+")
+    f.write(token)
+    f.close
+    return token
+
+def search():
+    byteText = bytes
+    #get skaes
+    f = open("../data/skaes.txt","r")
+    if f.mode == "r":
+        sk = f.read()
+        #print("secret key aes:    "+sk)
+    f.close()
+    aesKey = bytes
+    aesKey = aesKey.fromhex(sk)
+    aesCipher = AES.new(aesKey,AES.MODE_CBC)
+    f = open("../data/index.txt","r")
+    dic = {}
+    dic = ast.literal_eval(f.read())
+    f.close()
+    f = open("../data/token.txt","r")
+    token = f.read()
+    for pair in dic:
+        if pair == token:
+            list_of_enc_files = dic[pair]
+    for text_file in list_of_enc_files:
+        file_path = '../data/ciphertextfiles/'+text_file
+        f = open(file_path,'r')
+        enc_word = f.read()
+        byteText = byteText.fromhex(enc_word)
+        plaintext = unpad(aesCipher.decrypt(byteText),16)
+        print(text_file +'  '+str(plaintext))
+            
+search()
