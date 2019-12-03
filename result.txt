@@ -1,0 +1,4 @@
+c1.txt  b'bengals steelers packers'
+c2.txt  b'packers patriots'
+c3.txt  b'packers'
+c5.txt  b'L\xd1\xdb\xf0P\x18\xd0\xaf\xf6oI?\xedGY\xda'

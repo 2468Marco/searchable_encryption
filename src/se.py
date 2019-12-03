@@ -184,13 +184,13 @@ def search():
     for pair in dic:
         if pair == token:
             list_of_enc_files = dic[pair]
-    for text_file in list_of_enc_files:
-        file_path = '../data/ciphertextfiles/'+text_file
-        f = open(file_path,'r')
-        enc_word = f.read()
-        f.close
-        byteText = byteText.fromhex(enc_word)
-        plaintext = unpad(aesCipher.decrypt(byteText),16)
-        print(text_file +'  '+str(plaintext))
-            
-search()
+    with open("../result.txt", "w+") as r:
+        for text_file in list_of_enc_files:
+            file_path = '../data/ciphertextfiles/'+text_file
+            f = open(file_path,'r')
+            enc_word = f.read()
+            f.close
+            byteText = byteText.fromhex(enc_word)
+            plaintext = unpad(aesCipher.decrypt(byteText),16)
+            print(text_file +'  '+str(plaintext))
+            r.write(text_file +'  '+str(plaintext)+'\n')
