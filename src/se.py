@@ -74,6 +74,10 @@ def strToHex(string):
         return hex_string[2::]
 
 def enc():
+    
+    iv = bytes
+    iv = b'.$\xc7\x98\x84&\x9d\xf8(c\xfe\xb0K\xef\xeb\x06'
+        
     #get the plaintext index
     index = get_index()
 
@@ -99,7 +103,7 @@ def enc():
     #keywords cipher
     prfCipher = AES.new(prfKey,AES.MODE_ECB)
     #files cipher
-    aesCipher = AES.new(aesKey,AES.MODE_CBC)
+    aesCipher = AES.new(aesKey,AES.MODE_CBC, iv)
 
     #preperation for indexing
     byteText = bytes
@@ -158,6 +162,8 @@ def gen_tok(keyword):
     return token
 
 def search():
+    iv = bytes
+    iv = b'.$\xc7\x98\x84&\x9d\xf8(c\xfe\xb0K\xef\xeb\x06'
     byteText = bytes
     #get skaes
     f = open("../data/skaes.txt","r")
@@ -167,7 +173,7 @@ def search():
     f.close()
     aesKey = bytes
     aesKey = aesKey.fromhex(sk)
-    aesCipher = AES.new(aesKey,AES.MODE_CBC)
+    aesCipher = AES.new(aesKey,AES.MODE_CBC, iv)
     f = open("../data/index.txt","r")
     dic = {}
     dic = ast.literal_eval(f.read())
