@@ -121,13 +121,10 @@ def enc():
 
         #encrypting the file
         f = open(filepath,"w")
-        #the encrypt funciton does not use 'str' objects so it is nessassary to change it to hex format
-        hexText = strToHex(index[doc])
-        byteText = byteText.fromhex(hexText)
-        #pad the text so that it fills the block
-        padmsg = pad(byteText,16)
-        fileEnc = aesCipher.encrypt(padmsg)
-        f.write(fileEnc.hex())
+        print(index[doc])
+        encFileText = encString(aesKey, index[doc])
+        f.write(encFileText)
+        print(encFileText)
         f.close()
 
         #encrypting the keywords
@@ -161,10 +158,7 @@ def gen_tok(keyword):
     f.close
     return token
 
-def search():
-    iv = bytes
-    iv = b'.$\xc7\x98\x84&\x9d\xf8(c\xfe\xb0K\xef\xeb\x06'
-    byteText = bytes
+def search():    
     #get skaes
     f = open("../data/skaes.txt","r")
     if f.mode == "r":
@@ -173,7 +167,6 @@ def search():
     f.close()
     aesKey = bytes
     aesKey = aesKey.fromhex(sk)
-    aesCipher = AES.new(aesKey,AES.MODE_CBC, iv)
     f = open("../data/index.txt","r")
     dic = {}
     dic = ast.literal_eval(f.read())
@@ -184,13 +177,53 @@ def search():
     for pair in dic:
         if pair == token:
             list_of_enc_files = dic[pair]
-    with open("../result.txt", "w+") as r:
-        for text_file in list_of_enc_files:
-            file_path = '../data/ciphertextfiles/'+text_file
-            f = open(file_path,'r')
-            enc_word = f.read()
-            f.close
-            byteText = byteText.fromhex(enc_word)
-            plaintext = unpad(aesCipher.decrypt(byteText),16)
-            print(text_file +'  '+str(plaintext))
-            r.write(text_file +'  '+str(plaintext)+'\n')
+            print(list_of_enc_files)
+    for text_file in list_of_enc_files:
+        file_path = '../data/ciphertextfiles/'+text_file
+        f = open(file_path,'r')
+        enc_word = f.read()
+        f.close
+        decWord = dec(aesKey, enc_word)
+        print(text_file +'  '+decWord)
+    
+def dec(key, ct):
+    iv = bytes
+    iv = b'.$\xc7\x98\x84&\x9d\xf8(c\xfe\xb0K\xef\xeb\x06'
+
+    ciphertext = bytes
+    ciphertext = ciphertext.fromhex(ct)
+
+    #create a cipher with the key and iv
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+
+    #decrypt the ciphertext
+    data = cipher.decrypt(ciphertext)
+
+    #unpad the extra bytes from the decrypted ciphertext and format it
+    finalmsg = str(unpad(data,16))[2:-1]
+    return finalmsg
+
+def encString(sk, pt):
+    #make a bytes object to hold the key value
+    key = bytes
+    key = sk
+
+    #the encrypt funciton does not use 'str' objects so it is nessassary to change it to hex format
+    hexText = strToHex(pt)
+    byteText = bytes
+    byteText = byteText.fromhex(hexText)
+
+    #create the iv
+    iv = bytes
+    iv = b'.$\xc7\x98\x84&\x9d\xf8(c\xfe\xb0K\xef\xeb\x06'
+
+    #create the cipher using the key and the iv
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+
+    #pad the message so that it fills the block
+    padmsg = pad(byteText,16)
+
+    #encrypt the message
+    msg = cipher.encrypt(padmsg)
+
+    return msg.hex()
