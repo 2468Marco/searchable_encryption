@@ -156,6 +156,7 @@ def gen_tok(keyword):
     f = open("../data/token.txt","w+")
     f.write(token)
     f.close
+    print(token)
     return token
 
 def search():    
@@ -230,4 +231,4 @@ def encString(sk, pt):
     msg = cipher.encrypt(padmsg)
 
     return msg.hex()
-search()
+gen_tok("packers")
