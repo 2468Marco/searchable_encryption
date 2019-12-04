@@ -51,10 +51,12 @@ def key_save(key,file):
 
 #keyGen creates 2 'l' bit key and then saves them to skprf.txt and skaes.txt
 #'l' should be 16,24,32
-def keys_gen(l):
-        key = key_make(l)
+def keys_gen(length):
+        key = key_make(length)
+        print("PRF KEY: "+key)
         key_save(key,"../data/skprf.txt")
-        key = key_make(l)
+        key = key_make(length)
+        print("AES KEY: "+key)
         key_save(key,"../data/skaes.txt")
 
 
@@ -121,10 +123,8 @@ def enc():
 
         #encrypting the file
         f = open(filepath,"w")
-        print(index[doc])
         encFileText = encString(aesKey, index[doc])
         f.write(encFileText)
-        print(encFileText)
         f.close()
 
         #encrypting the keywords
@@ -142,6 +142,8 @@ def enc():
     f = open("../data/index.txt","w")
     f.write(str(invertedEncIndex))
     f.close()
+    print(index)
+    print(invertedEncIndex)
 
 def gen_tok(keyword):
     byteText = bytes
