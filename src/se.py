@@ -178,14 +178,17 @@ def search():
         if pair == token:
             list_of_enc_files = dic[pair]
             print(list_of_enc_files)
-    for text_file in list_of_enc_files:
-        file_path = '../data/ciphertextfiles/'+text_file
-        f = open(file_path,'r')
-        enc_word = f.read()
-        f.close
-        decWord = dec(aesKey, enc_word)
-        print(text_file +'  '+decWord)
-    
+    with open("../result.txt", "w+") as r:
+        for text_file in list_of_enc_files:
+            file_path = '../data/ciphertextfiles/'+text_file
+            f = open(file_path,'r')
+            enc_word = f.read()
+            f.close
+            decWord = dec(aesKey, enc_word)
+            print(text_file +'  '+decWord)
+            r.write(text_file +'  '+str(decWord)+'\n')
+        r.close
+
 def dec(key, ct):
     iv = bytes
     iv = b'.$\xc7\x98\x84&\x9d\xf8(c\xfe\xb0K\xef\xeb\x06'
@@ -227,3 +230,4 @@ def encString(sk, pt):
     msg = cipher.encrypt(padmsg)
 
     return msg.hex()
+search()
